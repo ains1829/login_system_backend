@@ -61,6 +61,10 @@ public class Users implements UserDetails {
     this.email = email;
   }
 
+  public String getEmail() {
+    return email;
+  }
+
   @Override
   public String getUsername() {
     return email;
