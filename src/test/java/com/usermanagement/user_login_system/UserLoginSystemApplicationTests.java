@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,7 +24,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.usermanagement.user_login_system.controller.token.TokenService;
 import com.usermanagement.user_login_system.models.jsontoclass.AuthUser;
 import com.usermanagement.user_login_system.models.users.Users;
 import com.usermanagement.user_login_system.repository.users.UsersRepository;
@@ -45,6 +50,8 @@ class UserLoginSystemApplicationTests {
 	private UsersRepository userrepository;
 	@Mock
 	private PasswordEncoder passwordEncoder;
+	@InjectMocks
+	TokenService tokenService;
 
 	public UserLoginSystemApplicationTests() {
 		MockitoAnnotations.openMocks(this);
@@ -118,5 +125,34 @@ class UserLoginSystemApplicationTests {
 		assertEquals("This email have already an account", exception.getMessage());
 		verify(passwordEncoder, never()).encode(anyString());
 		verify(userrepository, never()).save(any(Users.class));
+	}
+
+	@Test
+	void testGetEmailUserByToken() {
+		String mockToken = "valid_jwt_token";
+		String expectedEmail = "user@example.com";
+		Authentication mockAuthentication = mock(Authentication.class);
+		SecurityContext mockSecurityContext = mock(SecurityContext.class);
+		when(mockAuthentication.getCredentials()).thenReturn(mockToken);
+		when(mockSecurityContext.getAuthentication()).thenReturn(mockAuthentication);
+		when(_jwt_Service.getEmailByToken(mockToken)).thenReturn(expectedEmail);
+		SecurityContextHolder.setContext(mockSecurityContext);
+		String email = tokenService.getEmailUserByToken();
+		assertEquals(expectedEmail, email);
+		verify(_jwt_Service, times(1)).getEmailByToken(mockToken);
+	}
+
+	@Test
+	void testGetEmailUserByToken_InvalidToken() {
+		String mockToken = "invalid_jwt_token";
+		Authentication mockAuthentication = mock(Authentication.class);
+		SecurityContext mockSecurityContext = mock(SecurityContext.class);
+		when(mockAuthentication.getCredentials()).thenReturn(mockToken);
+		when(mockSecurityContext.getAuthentication()).thenReturn(mockAuthentication);
+		when(_jwt_Service.getEmailByToken(mockToken))
+				.thenThrow(new IllegalArgumentException("Expired or invalid JWT token"));
+		SecurityContextHolder.setContext(mockSecurityContext);
+		assertThrows(IllegalArgumentException.class, () -> tokenService.getEmailUserByToken());
+		verify(_jwt_Service, times(1)).getEmailByToken(mockToken);
 	}
 }
