@@ -1,16 +1,13 @@
 package com.usermanagement.user_login_system.security.config;
 
 import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.usermanagement.user_login_system.security.services.CustomUserDetailsService;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +20,8 @@ public class CustomRoleFilter extends OncePerRequestFilter {
   @Autowired
   private CustomUserDetailsService customUserDetailsService;
 
+  // Filtre qui intercepte chaque requête HTTP pour vérifier la présence et la
+  // validité d'un token JWT.
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {

@@ -13,6 +13,8 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Autowired
   private UsersRepository _contextUser;
 
+  // Méthode qui charge les détails d'un utilisateur en fonction de son nom
+  // d'utilisateur (email dans ce cas).
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Users user = _contextUser.getUsersByEmail(username)

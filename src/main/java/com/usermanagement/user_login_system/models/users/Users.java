@@ -1,6 +1,6 @@
 package com.usermanagement.user_login_system.models.users;
 
-import java.time.LocalTime;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,20 +13,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
+// implémentant l'interface UserDetails pour intégrer avec le framework Spring
+// Security
 public class Users implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   int user_id;
-  String username;
+  String email;
   String password_hash;
-  LocalTime registration_date;
+  Timestamp registration_date;
 
   public Users() {
   }
 
-  public Users(int user_id, String username, String password_hash, LocalTime registration_date) {
+  public Users(int user_id, String email, String password_hash, Timestamp registration_date) {
     this.user_id = user_id;
-    this.username = username;
+    this.email = email;
     this.password_hash = password_hash;
     this.registration_date = registration_date;
   }
@@ -47,21 +49,21 @@ public class Users implements UserDetails {
     this.password_hash = password_hash;
   }
 
-  public LocalTime getRegistration_date() {
+  public Timestamp getRegistration_date() {
     return registration_date;
   }
 
-  public void setRegistration_date(LocalTime registration_date) {
+  public void setRegistration_date(Timestamp registration_date) {
     this.registration_date = registration_date;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUsername(String email) {
+    this.email = email;
   }
 
   @Override
   public String getUsername() {
-    return username;
+    return email;
   }
 
   @Override

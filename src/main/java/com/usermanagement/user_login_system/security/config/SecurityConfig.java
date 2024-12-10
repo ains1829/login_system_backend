@@ -21,6 +21,7 @@ public class SecurityConfig {
   @Autowired
   private AuthenticationProvider authenticationProvider;
 
+  // Méthode qui configure la sécurité de l'API en utilisant HttpSecurity.
   @SuppressWarnings("removal")
   @Bean
   public SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
@@ -28,9 +29,9 @@ public class SecurityConfig {
         .csrf()
         .disable()
         .authorizeHttpRequests()
-        .requestMatchers("/auth/**").permitAll()
+        .requestMatchers("/auth/**").permitAll() // Autorise l'accès aux routes d'authentification sans authentification
         .anyRequest()
-        .authenticated()
+        .authenticated() // Nécessite une authentification pour toutes les autres requêtes
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

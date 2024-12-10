@@ -2,7 +2,6 @@ package com.usermanagement.user_login_system.security.config;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
@@ -25,16 +24,8 @@ public class JwtService {
     return Jwts.parser().setSigningKey(secret_key).parseClaimsJws(jwtToken).getBody().getSubject();
   }
 
-  @SuppressWarnings({ "deprecation", "unchecked" })
-  public List<String> getRolesByToken(String jwtToken) {
-    Claims claims = Jwts.parser()
-        .setSigningKey(secret_key)
-        .parseClaimsJws(jwtToken)
-        .getBody();
-    return claims.get("roles", List.class);
-  }
-
-  public String createToken(String username, List<String> roles) {
+  // Méthode qui génère un token JWT pour un utilisateur avec rôles.
+  public String createToken(String username, String roles) {
     Claims claims = Jwts.claims().setSubject(username);
     claims.put("roles", roles);
     Date now = new Date();
@@ -47,6 +38,8 @@ public class JwtService {
         .compact();
   }
 
+  // Méthode qui génère une clé de signature HMAC à partir d'une clé secrète
+  // encodée en BASE64.
   private Key getSignIngKey() {
     byte[] keyByte = Decoders.BASE64.decode(secret_key);
     return Keys.hmacShaKeyFor(keyByte);
@@ -62,6 +55,8 @@ public class JwtService {
     }
   }
 
+  // Méthode qui extrait le token JWT de l'en-tête "Authorization" de la requête
+  // HTTP.
   public String resolveToken(HttpServletRequest req) {
     String bearerToken = req.getHeader("Authorization");
     if (bearerToken != null && bearerToken.startsWith("Bearer ")) {

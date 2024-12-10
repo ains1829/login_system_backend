@@ -17,6 +17,7 @@ public class TokenService {
   @Autowired
   private UsersService _serviceUser;
 
+  // Méthode qui récupère l'email d'un utilisateur à partir de son token JWT.
   public String getEmailUserByToken() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String jwtToken = (String) authentication.getCredentials();
