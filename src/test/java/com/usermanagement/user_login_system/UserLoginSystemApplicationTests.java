@@ -77,11 +77,10 @@ class UserLoginSystemApplicationTests {
 
 	@Test
 	void testCheckLogin_Failure() {
-		// Arrange
 		String email = "test@example.com";
 		String password = "wrongpassword";
 		doThrow(new BadCredentialsException("Bad credentials")).when(authenticationManager)
-				.authenticate(any(UsernamePasswordAuthenticationToken.class));
+				.authenticate(any(UsernamePasswordAuthenticationToken.class)); // simule une exception
 		Exception exception = assertThrows(Exception.class, () -> {
 			authService.CheckLogin(email, password);
 		});
