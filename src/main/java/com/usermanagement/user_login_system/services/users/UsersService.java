@@ -29,7 +29,7 @@ public class UsersService {
     }
     new_user.PasswordCheked();
     Users save_user = new Users();
-    save_user.setUsername(new_user.getEmail());
+    save_user.setEmail(new_user.getEmail());
     // encode le mot de passe avant d'être stocké,
     save_user.setPassword_hash(passwordEncoder.encode(new_user.getPassword()));
     save_user.setRegistration_date(Timestamp.valueOf(LocalDateTime.now()));

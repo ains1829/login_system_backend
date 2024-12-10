@@ -57,7 +57,7 @@ public class Users implements UserDetails {
     this.registration_date = registration_date;
   }
 
-  public void setUsername(String email) {
+  public void setEmail(String email) {
     this.email = email;
   }
 
